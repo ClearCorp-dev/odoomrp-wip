@@ -160,6 +160,7 @@ class PurchaseCostDistribution(models.Model):
                     _('There is no picking lines in the distribution'))
             # Calculating expense line
             for line in distribution.cost_lines:
+                expense_list = []
                 line.expense_lines.unlink()
                 for expense in distribution.expense_lines:
                     if (expense.affected_lines and
@@ -227,7 +228,8 @@ class PurchaseCostDistribution(models.Model):
                         'expense_amount': expense_amount,
                         'cost_ratio': expense_amount / line.product_qty,
                     }
-                    line.expense_lines = [(0, 0, expense_line)]
+                    expense_list.append((0, 0, expense_line))
+                line.expense_lines = expense_list
             distribution.state = 'calculated'
         return True
 
